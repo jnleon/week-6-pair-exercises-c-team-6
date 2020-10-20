@@ -1,7 +1,9 @@
 ﻿using ProjectOrganizer.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,7 +25,39 @@ namespace ProjectOrganizer.DAL
         /// <returns></returns>
         public IList<Department> GetDepartments()
         {
-            throw new NotImplementedException();
+            List<Department> list = new List<Department>();
+            try
+            {
+                using(SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    SqlCommand cmd = new SqlCommand("SELECT department_id, name FROM department", conn);
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        Department d = ConvertReaderToDepartment(reader);
+                        list.Add(d);
+                    }
+                }
+            }
+            catch(SqlException e)
+            {
+                Console.WriteLine("An error occurred reading departments.");
+                Console.WriteLine(e.Message);
+                throw;
+            }
+            return list;
+        }
+
+        public Department ConvertReaderToDepartment(SqlDataReader reader)
+        {
+            Department d = new Department();
+            d.Id = Convert.ToInt32(reader["department_id"]);
+            d.Name = Convert.ToString(reader["name"]);
+
+            return d;
         }
 
         /// <summary>
@@ -33,7 +67,32 @@ namespace ProjectOrganizer.DAL
         /// <returns>The id of the new department (if successful).</returns>
         public int CreateDepartment(Department newDepartment)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    SqlCommand cmd = new SqlCommand("INSERT INTO department VALUES(@name)", conn);
+                    cmd.Parameters.AddWithValue("@name", newDepartment.Name);
+
+                    int numRowsAffected = cmd.ExecuteNonQuery();
+                    Console.WriteLine("Number of rows affected: " + numRowsAffected);
+
+                    cmd = new SqlCommand("SELECT MAX(department_id) FROM department;", conn);
+                    int id = Convert.ToInt32(cmd.ExecuteScalar());
+
+                    Console.WriteLine("The new department id is: " + id);
+
+                    return numRowsAffected;
+                }
+            }
+            catch (SqlException e)
+            {
+                Console.WriteLine("An error occurred creating departments.");
+                Console.WriteLine(e.Message);
+                throw;
+            }
         }
         
         /// <summary>
@@ -43,7 +102,37 @@ namespace ProjectOrganizer.DAL
         /// <returns>True, if successful.</returns>
         public bool UpdateDepartment(Department updatedDepartment)
         {
-            throw new NotImplementedException();
+            bool success = false;
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    SqlCommand cmd = new SqlCommand("UPDATE department SET name = @name WHERE department_id = @department_id", conn);
+                    cmd.Parameters.AddWithValue("@name", updatedDepartment.Name);
+                    cmd.Parameters.AddWithValue("@department_id", updatedDepartment.Id);
+
+                    int numRowsAffected = cmd.ExecuteNonQuery();
+
+                    if (numRowsAffected == 1)
+                    {
+                        success = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Oh no! You changed " + numRowsAffected + " rows!");
+                    }
+                                        
+                }
+            }
+            catch (SqlException e)
+            {
+                Console.WriteLine("An error occurred updating departments.");
+                Console.WriteLine(e.Message);
+                throw;
+            }
+            return success;
         }
 
     }
