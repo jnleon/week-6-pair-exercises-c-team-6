@@ -51,20 +51,7 @@ namespace ProjectOrganizer.DAL
             return list;
         }
 
-        private Employee ConvertReaderToEmployee(SqlDataReader reader)
-        {
-            Employee e = new Employee();
-            e.EmployeeId = Convert.ToInt32(reader["employee_id"]);
-            e.DepartmentId = Convert.ToInt32(reader["department_id"]);
-            e.FirstName = Convert.ToString(reader["first_name"]);
-            e.LastName = Convert.ToString(reader["last_name"]);
-            e.JobTitle = Convert.ToString(reader["job_title"]);
-            e.BirthDate = Convert.ToDateTime(reader["birth_date"]);
-            e.Gender = Convert.ToString(reader["gender"]);
-            e.HireDate = Convert.ToDateTime(reader["hire_date"]);
-
-            return e;
-        }
+        
 
         /// <summary>
         /// Searches the system for an employee by first name or last name.
@@ -96,7 +83,7 @@ namespace ProjectOrganizer.DAL
             }
             catch (SqlException e)
             {
-                Console.WriteLine("An error occurred reading employees.");
+                Console.WriteLine("An error occurred searching for employees.");
                 Console.WriteLine(e.Message);
                 throw;
             }
@@ -109,7 +96,49 @@ namespace ProjectOrganizer.DAL
         /// <returns></returns>
         public IList<Employee> GetEmployeesWithoutProjects()
         {
-            
+            List<Employee> list = new List<Employee>();
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    SqlCommand cmd = new SqlCommand("SELECT * FROM employee " +
+                                                    "WHERE employee_id NOT IN(SELECT DISTINCT employee_id " +
+                                                    "FROM project_employee)", conn);
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        Employee e = ConvertReaderToEmployee(reader);
+                        list.Add(e);
+                    }
+                }
+            }
+            catch (SqlException e)
+            {
+                Console.WriteLine("An error occurred reading employees without projects.");
+                Console.WriteLine(e.Message);
+                throw;
+            }
+            return list;
+        }
+     
+        
+        private Employee ConvertReaderToEmployee(SqlDataReader reader)
+        {
+            Employee e = new Employee();
+            e.EmployeeId = Convert.ToInt32(reader["employee_id"]);
+            e.DepartmentId = Convert.ToInt32(reader["department_id"]);
+            e.FirstName = Convert.ToString(reader["first_name"]);
+            e.LastName = Convert.ToString(reader["last_name"]);
+            e.JobTitle = Convert.ToString(reader["job_title"]);
+            e.BirthDate = Convert.ToDateTime(reader["birth_date"]);
+            e.Gender = Convert.ToString(reader["gender"]);
+            e.HireDate = Convert.ToDateTime(reader["hire_date"]);
+
+            return e;
         }
     }
-}
+ }
+

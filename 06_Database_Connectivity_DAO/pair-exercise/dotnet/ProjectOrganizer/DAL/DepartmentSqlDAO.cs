@@ -50,16 +50,6 @@ namespace ProjectOrganizer.DAL
             }
             return list;
         }
-
-        public Department ConvertReaderToDepartment(SqlDataReader reader)
-        {
-            Department d = new Department();
-            d.Id = Convert.ToInt32(reader["department_id"]);
-            d.Name = Convert.ToString(reader["name"]);
-
-            return d;
-        }
-
         /// <summary>
         /// Creates a new department.
         /// </summary>
@@ -94,7 +84,6 @@ namespace ProjectOrganizer.DAL
                 throw;
             }
         }
-        
         /// <summary>
         /// Updates an existing department.
         /// </summary>
@@ -133,6 +122,14 @@ namespace ProjectOrganizer.DAL
                 throw;
             }
             return success;
+        }
+        public Department ConvertReaderToDepartment(SqlDataReader reader)
+        {
+            Department d = new Department();
+            d.Id = Convert.ToInt32(reader["department_id"]);
+            d.Name = Convert.ToString(reader["name"]);
+
+            return d;
         }
 
     }
