@@ -80,8 +80,6 @@ namespace ProjectOrganizer.DAL
             }
             catch (SqlException e)
             {
-                Console.WriteLine("An error occurred assigning employees to projects.");
-                Console.WriteLine(e.Message);
                 throw;
             }
             return true;

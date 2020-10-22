@@ -32,55 +32,59 @@ namespace ProjectOrganizerTests
         {
             // Arrange
             ProjectSqlDAO dao = new ProjectSqlDAO(ConnectionString);
+            EmployeeSqlDAO employeeDAO = new EmployeeSqlDAO(ConnectionString);
             int startingRowCount = GetRowCount("project_employee");
 
             Project SM64 = new Project();
             SM64.Name = "Super Mario";
-            SM64.ProjectId = NewProjectId + 1;
             SM64.StartDate = DateTime.Now;
             SM64.EndDate = DateTime.Now;
 
-            Employee Ricardo = new Employee();
-            Ricardo.FirstName = "enrique";
-            Ricardo.LastName = "josh";
-            Ricardo.Gender = "M";
-            Ricardo.JobTitle = "CEO";
-            Ricardo.BirthDate = DateTime.Now;
-            Ricardo.HireDate = DateTime.Now;
-            Ricardo.DepartmentId = NewDepartmentId;
-            Ricardo.EmployeeId = NewEmployeeId +1;
+            Employee Enrique = new Employee();
+            Enrique.FirstName = "Enrique";
+            Enrique.LastName = "Josh";
+            Enrique.Gender = "M";
+            Enrique.JobTitle = "CEO";
+            Enrique.BirthDate = DateTime.Now;
+            Enrique.HireDate = DateTime.Now;
+            Enrique.DepartmentId = NewDepartmentId;
 
-            dao.AssignEmployeeToProject(SM64.ProjectId, Ricardo.EmployeeId);
+            dao.CreateProject(SM64);
+            employeeDAO.CreateEmployee(Enrique);
+            dao.AssignEmployeeToProject(SM64.ProjectId, Enrique.EmployeeId);
 
             int endingRowCount = GetRowCount("project_employee");
             //ACT
 
-            //ASERT
+            //ASSERT
             Assert.AreNotEqual(startingRowCount, endingRowCount);
+        }
 
+        [TestMethod]
+        public void TestRemoveEmployeeFromProject()
+        {
+            ProjectSqlDAO dao = new ProjectSqlDAO(ConnectionString);
+            int startingRowCount = GetRowCount("project_employee");
 
-            ////Arrange
-            //DepartmentSqlDAO dao = new DepartmentSqlDAO(ConnectionString);
-            //IList<Department> depts = dao.GetDepartments();
+            dao.RemoveEmployeeFromProject(NewProjectId, NewEmployeeId);
 
-            //Department deptchange = depts[0];
+            int endingRowCount = GetRowCount("project_employee");
 
-            ////Act
-            //deptchange.Name = "GranTurismo";
-            //dao.UpdateDepartment(deptchange);
+            Assert.AreEqual(startingRowCount - 1, endingRowCount);
+        }
 
-            ////Assert
-            //IList<Department> updateddept = dao.GetDepartments();
-            //Department fromDB = null;
-            //foreach (Department c in updateddept)
-            //{
-            //    if (c.Id == deptchange.Id)
-            //    {
-            //        fromDB = c;
-            //        break;
-            //    }
-            //}
-            //Assert.AreEqual("GranTurismo", fromDB.Name);
+        [TestMethod]
+        public void TestCreateProject()
+        {
+            ProjectSqlDAO dao = new ProjectSqlDAO(ConnectionString);
+            Project SM64 = new Project();
+            SM64.Name = "Super Mario";
+            SM64.StartDate = DateTime.Now;
+            SM64.EndDate = DateTime.Now;
+
+            int result = dao.CreateProject(SM64);
+
+            Assert.AreEqual(1, result);
         }
     }
 }

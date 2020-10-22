@@ -139,6 +139,26 @@ namespace ProjectOrganizer.DAL
 
             return e;
         }
+
+        //FOR TESTING ONLY
+        public void CreateEmployee(Employee newEmployee)
+        {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    SqlCommand cmd = new SqlCommand("INSERT INTO employee(department_id, first_name, last_name, job_title, birth_date, gender, hire_date) VALUES(@department_id, @first_name, @last_name, @job_title, @birth_date, @gender, @hire_date)", conn);
+                    cmd.Parameters.AddWithValue("@department_id", newEmployee.DepartmentId);
+                    cmd.Parameters.AddWithValue("@first_name", newEmployee.FirstName);
+                    cmd.Parameters.AddWithValue("@last_name", newEmployee.LastName);
+                    cmd.Parameters.AddWithValue("@job_title", newEmployee.JobTitle);
+                    cmd.Parameters.AddWithValue("@birth_date", newEmployee.BirthDate);
+                    cmd.Parameters.AddWithValue("@gender", newEmployee.Gender);
+                    cmd.Parameters.AddWithValue("@hire_date", newEmployee.HireDate);
+
+                    cmd.ExecuteNonQuery();                   
+                }            
+        }
     }
  }
 
