@@ -18,6 +18,7 @@ namespace ProjectOrganizerTests
         protected int NewDepartmentId { get; private set; }
         protected int NewProjectId { get; private set; }
         protected int NewEmployeeId { get; private set; }
+        protected int NewEmployeeId2 { get; private set; }
 
 
 
@@ -40,7 +41,7 @@ namespace ProjectOrganizerTests
                     this.NewProjectId = Convert.ToInt32(reader["newProjectId"]);
                     this.NewDepartmentId = Convert.ToInt32(reader["newDepartmentId"]);
                     this.NewEmployeeId = Convert.ToInt32(reader["newEmployeeId"]);
-
+                    this.NewEmployeeId2 = Convert.ToInt32(reader["newEmployeeId2"]);
                 }
             }
         }

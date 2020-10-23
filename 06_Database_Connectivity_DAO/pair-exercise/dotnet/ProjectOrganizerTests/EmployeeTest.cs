@@ -43,19 +43,9 @@ namespace ProjectOrganizerTests
         {
             EmployeeSqlDAO dao = new EmployeeSqlDAO(ConnectionString);
 
-            Employee Enrique = new Employee();
-            Enrique.FirstName = "Enrique";
-            Enrique.LastName = "Josh";
-            Enrique.Gender = "M";
-            Enrique.JobTitle = "CEO";
-            Enrique.BirthDate = DateTime.Now;
-            Enrique.HireDate = DateTime.Now;
-            Enrique.DepartmentId = NewDepartmentId;
-
-            dao.CreateEmployee(Enrique);
             IList<Employee> result = dao.GetEmployeesWithoutProjects();
 
-            Assert.AreEqual(Enrique.FirstName, result[0].FirstName);
+            Assert.AreEqual(NewEmployeeId2, result[0].EmployeeId);
         }        
     }
 }

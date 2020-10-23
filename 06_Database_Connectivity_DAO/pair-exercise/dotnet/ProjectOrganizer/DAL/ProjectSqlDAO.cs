@@ -78,7 +78,7 @@ namespace ProjectOrganizer.DAL
                     Console.WriteLine("Number of rows affected: " + numRowsAffected);
                 }
             }
-            catch (SqlException e)
+            catch (SqlException)
             {
                 throw;
             }
