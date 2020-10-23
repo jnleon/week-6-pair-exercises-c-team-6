@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Security.Cryptography.X509Certificates;
 using CampgroundReservations.Models;
 
 namespace CampgroundReservations.DAO
@@ -16,7 +17,30 @@ namespace CampgroundReservations.DAO
 
         public IList<Park> GetAllParks()
         {
-            throw new NotImplementedException();
+            IList<Park> parkList = new List<Park>();
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    SqlCommand cmd = new SqlCommand("SELECT * FROM park ORDER BY location, name", conn);
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        Park p = GetParkFromReader(reader);
+                        parkList.Add(p);
+                    }
+                }
+                return parkList;
+            }
+            catch (SqlException e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
         }
 
         private Park GetParkFromReader(SqlDataReader reader)
