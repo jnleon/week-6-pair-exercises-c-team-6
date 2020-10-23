@@ -8,5 +8,6 @@ namespace CampgroundReservations.DAO
     {
         int CreateReservation(int siteId, string name, DateTime fromDate, DateTime toDate);
 
+        IList<Reservation> GetReservationsWithin30DaysSelectedPark(string parkId);
     }
 }

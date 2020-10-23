@@ -10,7 +10,7 @@ namespace CampgroundReservations.Tests.DAO
     public class SiteSqlDAOTests : BaseDAOTests
     {
         [TestMethod]
-        public void GetSitesThatAllowRVs_Should_ReturnSites()
+        public void GetSitesThatAllowRVs_Should_ReturnSitesTest()
         {
             // Arrange
             SiteSqlDAO dao = new SiteSqlDAO(ConnectionString);
@@ -22,5 +22,30 @@ namespace CampgroundReservations.Tests.DAO
             Assert.AreEqual(2, sites.Count);
         }
 
+        [TestMethod]
+        public void GetSitesWithoutReservationsTest()
+        {
+            // Arrange
+            SiteSqlDAO dao = new SiteSqlDAO(ConnectionString);
+
+            // Act
+            IList<Site> sites = dao.GetSitesWithoutReservations(ParkId);
+
+            // Assert
+            Assert.AreEqual(2, sites.Count);
+        }
+       
+        [TestMethod]
+        public void GetSitesForFutureReservationsTest()
+        {
+            // Arrange
+            SiteSqlDAO dao = new SiteSqlDAO(ConnectionString);
+
+            // Act
+            IList<Site> sites = dao.GetSitesForFutureReservations(ParkId, DateTime.Now.AddDays(3), DateTime.Now.AddDays(5));
+
+            // Assert
+            Assert.AreEqual(2, sites.Count);
+        }
     }
 }

@@ -21,6 +21,20 @@ namespace CampgroundReservations.Tests.DAO
             // Assert
             Assert.AreEqual(ReservationId + 1, returnedId);
         }
+        
+        [TestMethod]
+        public void GetReservationsWithin30DaysSelectedPark()
+        {
+            //ARRANGE
+            ReservationSqlDAO dao = new ReservationSqlDAO(ConnectionString);
+           
+            //ACT
+            List<Reservation> result = (List<Reservation>)dao.GetReservationsWithin30DaysSelectedPark(ParkId.ToString());
+       
+            //ASSERT 
+            Assert.AreEqual(2, result.Count);
+
+        }
 
     }
 }
